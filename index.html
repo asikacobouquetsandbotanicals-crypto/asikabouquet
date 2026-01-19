@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ashika & Co. Bouquet and Botanicals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#fff0f5;
+  --text:#000;
+  --card:#fff;
+  --main:#c2185b;
+  --secondary:#ad1457;
+}
+.dark{
+  --bg:#121212;
+  --text:#e0e0e0;
+  --card:#1e1e1e;
+  --main:#f06292;
+  --secondary:#ec407a;
+}
+body{
+  margin:0;
+  font-family:Arial;
+  background:var(--bg);
+  color:var(--text);
+}
+header{
+  background:linear-gradient(to right,var(--main),var(--secondary));
+  color:white;
+  text-align:center;
+  padding:25px;
+}
+section{max-width:1200px;margin:auto;padding:25px;}
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+.card{
+  background:var(--card);
+  border-radius:12px;
+  padding:15px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+}
+.card img{
+  width:100%;
+  border-radius:10px;
+}
+.price{
+  color:#c2185b;
+  font-weight:bold;
+}
+button{
+  background:var(--main);
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+input,select{
+  width:100%;
+  padding:8px;
+  margin:6px 0;
+}
+.invoice{
+  background:#fff;
+  color:#000;
+  padding:20px;
+  border-radius:10px;
+}
+.contact a{
+  display:inline-block;
+  margin:6px;
+  padding:10px 14px;
+  background:#4caf50;
+  color:white;
+  border-radius:6px;
+  text-decoration:none;
+}
+footer{
+  background:#222;
+  color:white;
+  text-align:center;
+  padding:15px;
+}
+.whatsapp{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#25D366;
+  color:white;
+  padding:15px;
+  border-radius:50%;
+  font-size:20px;
+  text-decoration:none;
+}
+.quantity-input{
+  width:60px;
+  margin-left:5px;
+  padding:4px;
+}
+.cart-summary{
+  margin-top:15px;
+  border-top:1px solid #ccc;
+  padding-top:10px;
+}
+.cart-item{
+  display:flex;
+  justify-content: space-between;
+  margin-bottom:8px;
+  align-items: center;
+}
+.cart-item button{
+  background:red;
+  padding:2px 6px;
+  font-size:12px;
+}
+
+/* PRINT ONLY INVOICE */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .invoice, .invoice * {
+    visibility: visible;
+  }
+  .invoice {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .invoice button {
+    display: none;
+  }
+  .invoice h2 {
+    text-align: center;
+  }
+  .invoice p {
+    font-size: 14pt;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Ashika & Co. Bouquet and Botanicals</h1>
+<p>Premium Artificial Bouquets 🌸</p>
+<button onclick="toggleMode()">🌙 / ☀️ Mode</button>
+</header>
+
+<section>
+<input type="text" id="search" placeholder="🔍 Search bouquet..." onkeyup="searchProduct()">
+
+<div class="products" id="productList">
+  <div class="card" data-name="Rose Artificial Bouquet" data-price="3500">
+    <img src="https://via.placeholder.com/400?text=Rose+Bouquet" alt="Rose Artificial Bouquet">
+    <h3>Rose Artificial Bouquet</h3>
+    <p class="price">NRP 3500</p>
+    <p>⭐ ⭐ ⭐ ⭐ ⭐</p>
+    <label>Qty: <input type="number" class="quantity-input" value="1" min="1"></label>
+    <button onclick="addToCart(this)">Add to Cart</button>
+  </div>
+
+  <div class="card" data-name="Luxury Botanical Bouquet" data-price="5000">
+    <img src="https://via.placeholder.com/400?text=Luxury+Botanical" alt="Luxury Botanical Bouquet">
+    <h3>Luxury Botanical Bouquet</h3>
+    <p class="price">NRP 5000</p>
+    <p>⭐ ⭐ ⭐ ⭐</p>
+    <label>Qty: <input type="number" class="quantity-input" value="1" min="1"></label>
+    <button onclick="addToCart(this)">Add to Cart</button>
+  </div>
+
+  <div class="card" data-name="Wedding Artificial Bouquet" data-price="7000">
+    <img src="https://via.placeholder.com/400?text=Wedding+Bouquet" alt="Wedding Artificial Bouquet">
+    <h3>Wedding Artificial Bouquet</h3>
+    <p class="price">NRP 7000</p>
+    <p>⭐ ⭐ ⭐ ⭐ ⭐</p>
+    <label>Qty: <input type="number" class="quantity-input" value="1" min="1"></label>
+    <button onclick="addToCart(this)">Add to Cart</button>
+  </div>
+</div>
+</section>
+
+<section class="card">
+<h2>Order Details</h2>
+<input id="name" placeholder="Customer Name">
+<select id="currency">
+<option>NPR</option>
+<option>USD</option>
+<option>INR</option>
+<option>AUD</option>
+</select>
+<select id="payment">
+<option>Khalti</option>
+<option>eSewa</option>
+</select>
+<button onclick="placeOrder()">💳 Pay & Place Order</button>
+<p>⏱️ Estimated Delivery: 1–3 Days (Nepal)</p>
+
+<div class="cart-summary" id="cartSummary">
+  <h3>Cart: 0 items</h3>
+  <div id="cartItems"></div>
+</div>
+</section>
+
+<section id="invoiceArea"></section>
+
+<section>
+<h2>Contact</h2>
+<div class="contact">
+<a href="tel:9701363440">📞 Call</a>
+<a href="https://wa.me/9779701363440" target="_blank">💬 WhatsApp</a>
+<a href="viber://chat?number=9779701363440">📱 Viber</a>
+</div>
+</section>
+
+<footer>
+<p>Founder: <strong>Ashika Gurung</strong></p>
+<p>© 2026 Ashika & Co. Bouquet and Botanicals</p>
+</footer>
+
+<a class="whatsapp" href="https://wa.me/9779701363440" target="_blank">💬</a>
+
+<script>
+let cart = [];
+
+/* Dark mode memory */
+if(localStorage.mode==="dark") document.body.classList.add("dark");
+function toggleMode(){
+  document.body.classList.toggle("dark");
+  localStorage.mode=document.body.classList.contains("dark")?"dark":"light";
+  updateCartSummary();
+}
+
+/* Add to cart */
+function addToCart(btn){
+  let card = btn.closest(".card");
+  let name = card.dataset.name;
+  let price = parseInt(card.dataset.price);
+  let qty = parseInt(card.querySelector(".quantity-input").value);
+  if(qty < 1) { alert("Quantity must be at least 1"); return; }
+
+  let existing = cart.find(p=>p.name===name);
+  if(existing){ existing.qty += qty; } 
+  else { cart.push({name, price, qty}); }
+
+  updateCartSummary();
+}
+
+/* Remove from cart */
+function removeFromCart(name){
+  cart = cart.filter(p=>p.name !== name);
+  updateCartSummary();
+}
+
+/* Update quantity in cart */
+function updateCartItem(name, qty){
+  let item = cart.find(p=>p.name===name);
+  if(item){ 
+    item.qty = qty<1?1:qty; 
+    updateCartSummary();
+  }
+}
+
+/* Update cart display */
+function updateCartSummary(){
+  let summary = document.getElementById("cartSummary");
+  let itemsContainer = document.getElementById("cartItems");
+  itemsContainer.innerHTML = "";
+
+  let totalItems = cart.reduce((a,b)=>a+b.qty,0);
+  summary.querySelector("h3").innerText = `Cart: ${totalItems} item(s)`;
+
+  cart.forEach(item=>{
+    let div = document.createElement("div");
+    div.classList.add("cart-item");
+    div.innerHTML = `
+      ${item.name} x <input type="number" min="1" value="${item.qty}" style="width:50px" onchange="updateCartItem('${item.name}', this.value)">
+      = NRP ${item.price*item.qty} 
+      <button onclick="removeFromCart('${item.name}')">X</button>
+    `;
+    itemsContainer.appendChild(div);
+  });
+}
+
+/* Place order only if payment successful */
+function placeOrder(){
+  let name = document.getElementById("name").value.trim();
+  if(!name){ alert("Please enter your name"); return; }
+  if(cart.length===0){ alert("Please add at least one product to cart"); return; }
+
+  let payMethod = document.getElementById("payment").value;
+
+  // Simulate payment confirmation
+  let confirmPayment = confirm(`Simulate ${payMethod} Payment?\nClick OK to mark as successful.`);
+  if(!confirmPayment){
+    alert("Payment failed! Order not placed.");
+    return;
+  }
+
+  // Payment successful, generate invoice
+  generateInvoice();
+  alert("✅ Payment successful! Your order has been placed.");
+  cart = []; // clear cart after order
+  updateCartSummary();
+}
+
+/* Generate invoice */
+function generateInvoice(){
+  let name = document.getElementById("name").value.trim();
+  let cur = document.getElementById("currency").value;
+  let pay = document.getElementById("payment").value;
+  let date = new Date().toLocaleDateString();
+  let inv = "AC-"+Math.floor(Math.random()*100000);
+
+  let conversion = {USD:132, INR:1.6, AUD:88, NPR:1};
+  if(!conversion[cur]){ alert("Unsupported currency selected! Using NPR"); cur="NPR"; }
+
+  let total = 0, itemsHtml = "";
+  cart.forEach(p=>{
+    let amt = (p.price*p.qty / conversion[cur]).toFixed(2);
+    total += parseFloat(amt);
+    itemsHtml += `<p>${p.name} x ${p.qty} = ${cur} ${amt}</p>`;
+  });
+
+  document.getElementById("invoiceArea").innerHTML=`
+    <div class="invoice">
+      <h2>Ashika & Co. Bouquet and Botanicals</h2>
+      <p><b>Invoice:</b> ${inv}</p>
+      <p><b>Customer:</b> ${name}</p>
+      ${itemsHtml}
+      <p><b>Total Amount:</b> ${cur} ${total.toFixed(2)}</p>
+      <p><b>Payment:</b> ${pay}</p>
+      <p><b>Date:</b> ${date}</p>
+      <button onclick="window.print()">🖨️ Print Bill</button>
+      <button onclick="sendWhatsApp('${inv}', ${total.toFixed(2)}, '${cur}')">📤 Send to WhatsApp</button>
+    </div>
+  `;
+}
+
+/* Send WhatsApp with confirmation */
+function sendWhatsApp(inv,total,cur){
+  let url = `https://wa.me/9779701363440?text=Invoice%20${inv}%20Amount%20${total}%20${cur}%20Payment%20Done`;
+  window.open(url,'_blank');
+  alert("WhatsApp opened! Please complete the message send to confirm.");
+}
+
+/* Search products by title */
+function searchProduct(){
+  let s=document.getElementById("search").value.toLowerCase();
+  document.querySelectorAll(".card").forEach(c=>{
+    let name=c.querySelector("h3").innerText.toLowerCase();
+    c.style.display = name.includes(s)?"block":"none";
+  });
+}
+</script>
+
+</body>
+</html>
